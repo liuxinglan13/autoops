@@ -65,13 +65,16 @@
                         <div class="form-group">
                             <div class="col-sm-10 col-sm-offset-0">
                                 <h3>基本</h3>
+                                 {% bootstrap_field form.assets_type layout="horizontal" %}
+                                 {% bootstrap_field form.hostname layout="horizontal" %}
                                 {% bootstrap_field form.network_ip layout="horizontal" %}
-                                {% bootstrap_field form.manage_ip layout="horizontal" %}
+                                {% bootstrap_field form.assets_description layout="horizontal" %}
                                  {% bootstrap_field form.inner_ip layout="horizontal" %}
-                                {% bootstrap_field form.port layout="horizontal" %}
                                 {% bootstrap_field form.system_user layout="horizontal" %}
                                 {% bootstrap_field form.product_line layout="horizontal" %}
                                  {% bootstrap_field form.data_center layout="horizontal" %}
+                                {% bootstrap_field form.system layout="horizontal" %}
+                                {% bootstrap_field form.assets_status layout="horizontal" %}
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>

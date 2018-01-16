@@ -70,12 +70,11 @@
                                 <h3>基本</h3>
                                 {% bootstrap_field form.hostname layout="horizontal" %}
                                 {% bootstrap_field form.network_ip layout="horizontal" %}
-                                {% bootstrap_field form.manage_ip layout="horizontal" %}
-                                 {% bootstrap_field form.inner_ip layout="horizontal" %}
-                                {% bootstrap_field form.port layout="horizontal" %}
+                                {% bootstrap_field form.assets_description layout="horizontal" %}
+                                {% bootstrap_field form.assets_type layout="horizontal" %}
                                 {% bootstrap_field form.system_user layout="horizontal" %}
                                 {% bootstrap_field form.product_line layout="horizontal" %}
-                                {% bootstrap_field form.uplink_port layout="horizontal" %}
+                                {% bootstrap_field form.assets_status layout="horizontal" %}
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>
@@ -93,13 +92,6 @@
                                 {% bootstrap_field form.cpu layout="horizontal" %}
                                 {% bootstrap_field form.memory layout="horizontal" %}
                                 {% bootstrap_field form.disk layout="horizontal" %}
-
-                              {% bootstrap_field form.eth0 layout="horizontal" %}
-                                {% bootstrap_field form.eth1 layout="horizontal" %}
-                                 {% bootstrap_field form.eth2 layout="horizontal" %}
-                                 {% bootstrap_field form.eth3 layout="horizontal" %}
-
-
                             </div>
                         </div>
                         <div class="hr-line-dashed"></div>

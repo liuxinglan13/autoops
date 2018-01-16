@@ -3,8 +3,35 @@ from django.contrib.auth.models import Group
 import random
 
 
+# 资产的使用状态（在用，停用，等）
+class AssetStatus(models.Model):
+    name = models.CharField(max_length=10, verbose_name='主机状态')
 
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "主机状态"
+        verbose_name_plural = verbose_name
+
+
+# 资产的分类（物理服务器，虚拟服务器，交换机，路由器）
+class AssetCategorys(models.Model):
+    name = models.CharField(max_length=70, verbose_name='资产分类名')
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = "主机分类"
+        verbose_name_plural = verbose_name
+
+
+#资产
 class asset(models.Model):
+    assets_status = models.ForeignKey(AssetStatus, verbose_name='状态', on_delete=models.CASCADE)
+    assets_type = models.ForeignKey(AssetCategorys, verbose_name='分类', on_delete=models.CASCADE)
+    assets_description = models.CharField(max_length=100, verbose_name='主机的用途', null=True, blank=True)
     hostname = models.CharField(max_length=64, verbose_name='主机名', null=True,blank=True)
     network_ip = models.GenericIPAddressField(verbose_name='外网IP',unique=True)
     manage_ip = models.GenericIPAddressField(verbose_name='管理IP', null=True,blank=True)
@@ -12,13 +39,6 @@ class asset(models.Model):
     port = models.IntegerField(verbose_name='ssh端口', null=True,blank=True,default="22")
     model = models.CharField(max_length=128, verbose_name='型号', null=True,blank=True)
     system = models.CharField(max_length=128,verbose_name='系统版本',null=True,blank=True)
-
-    eth0 = models.CharField(max_length=64, verbose_name="网卡1mac地址", null=True, blank=True)
-    eth1 = models.CharField(max_length=64, verbose_name="网卡2mac地址", null=True, blank=True)
-    eth2 = models.CharField(max_length=64, verbose_name="网卡3mac地址", null=True, blank=True)
-    eth3 = models.CharField(max_length=64, verbose_name="网卡4mac地址", null=True, blank=True)
-
-
     system_user = models.ForeignKey(to="system_users",to_field='id',on_delete=models.SET_NULL, null=True,verbose_name='登陆用户',blank=True)
     data_center =  models.ForeignKey(to="data_centers",to_field='id',on_delete=models.SET_NULL, null=True,verbose_name='数据中心')
     cabinet = models.CharField(max_length=64,verbose_name='机柜',null=True,blank=True)
@@ -38,6 +58,7 @@ class asset(models.Model):
 
 
     is_active = models.BooleanField(default=True, verbose_name=('是否启用'))
+
     ps = models.CharField(max_length=1024,verbose_name="备注",null=True,blank=True)
     file = models.FileField(upload_to = '%Y%m%d{}'.format(random.randint(0,99999)),verbose_name="文件",null=True,blank=True,default=None)
 
@@ -134,3 +155,19 @@ class web_history(models.Model):
 
     def __str__(self):
         return self.user
+
+
+# 资产的操作记录
+class assets_change_record(models.Model):
+    assets = models.ForeignKey(asset, related_name='asset_change_record', on_delete=models.CASCADE)
+    body = models.CharField(max_length=100, verbose_name='添加操作记录')
+    created = models.DateTimeField(auto_now_add=True)
+    author = models.CharField(max_length=20, default='admin')
+
+    def __str__(self):
+        return 'Comment {} {} on {}'.format(self.assets, self.body, self.created)
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = "主机操作记录"
+        verbose_name_plural = verbose_name

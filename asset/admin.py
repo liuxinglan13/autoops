@@ -1,5 +1,5 @@
 from django.contrib import admin
-from   .models import asset,data_centers,system_users,performance,web_history
+from   .models import asset,data_centers,system_users,performance,web_history,AssetCategorys,AssetStatus
 from guardian.admin import GuardedModelAdmin
 
 
@@ -20,3 +20,5 @@ admin.site.register(data_centers)
 admin.site.register(system_users,SystemUsersAdmin)
 admin.site.register(performance)
 admin.site.register(web_history)
+admin.site.register(AssetStatus)
+admin.site.register(AssetCategorys)

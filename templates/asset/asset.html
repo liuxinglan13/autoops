@@ -79,12 +79,13 @@
                                     <thead>
                                     <tr>
                                         <th width="20"><input type="checkbox" id="CheckedAll"></th>
-                                        <th>外网IP</th>
-                                        <th>管理IP</th>
-                                        <th>产品线</th>
-                                        <th>位置</th>
-                                        <th>型号</th>
-                                        <th>SN</th>
+                                        <th>IP</th>
+                                        <th>主机名</th>
+                                        <th>用途</th>
+                                        <th>状态</th>
+                                        <th>分类</th>
+                                        <th>所属组</th>
+                                        <th>系统</th>
                                         <th>动作{{ error_performance }}</th>
                                     </tr>
                                     </thead>
@@ -97,20 +98,21 @@
                                             <td class="center"><a
                                                     href="{% url  "asset:asset_detail"   pk=row.id %}">{{ row.network_ip }}</a>
                                             </td>
-                                            <td class="center">{{ row.manage_ip }}</td>
+                                            <td class="center">{{ row.hostname }}</td>
+                                            <td class="center">{{ row.assets_description }}</td>
+                                            <td class="center">{{ row.assets_status.name }}</td>
+                                            <td class="center">{{ row.assets_type.name }}</td>
                                             <td class="center">{{ row.product_line.name }}</td>
-                                            <td class="center">{{ row.cabinet }} {{ row.position }}</td>
-                                            <td class="center">{{ row.model }}</td>
-                                            <td class="center">{{ row.sn }}</td>
+                                            <td class="center">{{ row.system }}</td>
                                             <td><a class="btn btn-primary  btn-xs "
                                                    href="{% url  "asset:asset_update"  pk=row.id %}">编辑</a>
                                                 <a class="btn btn-danger  btn-xs  asset_del" data-toggle="modal"
                                                    data-target="#myModal1">删除
                                                 </a>
-                                                <a class="btn btn-primary  btn-xs "
-                                                   href="{% url    "asset:asset_performance"   row.id %}">性能</a>
-                                                <a type="button" class="btn btn-primary btn-xs  webssh">终端
-                                                </a>
+{#                                                <a class="btn btn-primary  btn-xs "#}
+{#                                                   href="{% url    "asset:asset_performance"   row.id %}">性能</a>#}
+{#                                                <a type="button" class="btn btn-primary btn-xs  webssh">终端#}
+{#                                                </a>#}
 
                                             </td>
                                         </tr>

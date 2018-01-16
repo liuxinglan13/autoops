@@ -20,9 +20,27 @@ import xlwt, time, json
 from django.template import loader
 from pyecharts import Gauge, Line
 import threading, time, datetime
+from asset.form import assets_change_record_Form
 
 
 from  tasks.ansible_runner.runner import AdHocRunner
+
+
+
+class AssetConfigAll(TemplateView):
+    template_name = 'asset/asset-config.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(AssetConfigAll, self).dispatch(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = {
+            "asset_active": "active",
+            "asset_config_list_active": "active"
+        }
+        kwargs.update(context)
+        return super(AssetConfigAll, self).get_context_data(**kwargs)
 
 
 class AssetListAll(TemplateView):
@@ -42,24 +60,6 @@ class AssetListAll(TemplateView):
         }
         kwargs.update(context)
         return super(AssetListAll, self).get_context_data(**kwargs)
-
-        # def post(self, request):
-        #     query = request.POST.get("name")
-        #
-        #     ret = asset.objects.filter(
-        #         Q(network_ip=query) | Q(manage_ip=query) | Q(hostname=query) | Q(inner_ip=query) | Q(model=query) | Q(
-        #             eth0=query) | Q(eth1=query) | Q(eth2=query) | Q(eth3=query) |
-        #         Q(system=query) | Q(system_user__username=query) | Q(data_center__data_center_list=query) | Q(
-        #             cabinet=query) |
-        #         Q(position=query) | Q(sn=query)
-        #         | Q(uplink_port=query) |
-        #         Q(product_line__name=query))
-        #
-        #     return render(request, 'asset/asset.html',
-        #                   {"Webssh": getattr(settings, 'Webssh_ip'),
-        #                    "Webssh_port": getattr(settings, 'Webssh_port'),
-        #                    "asset_active": "active",
-        #                    "asset_list_active": "active", "asset_list": ret})
 
 
 class AssetAdd(CreateView):
@@ -155,15 +155,30 @@ class AssetDetail(DetailView):
     def dispatch(self, *args, **kwargs):
         return super(AssetDetail, self).dispatch(*args, **kwargs)
 
+    def post(self, request, *args, **kwargs):
+        response = super(AssetDetail, self).get(request, *args, **kwargs)
+        assets_change_record_form = assets_change_record_Form(data=self.request.POST)
+        if assets_change_record_form.is_valid():
+            new_comment = assets_change_record_form.save(commit=False)
+            new_comment.assets = self.object
+            new_comment.author = self.request.user
+            new_comment.save()
+        return response
+
+
     def get_context_data(self, **kwargs):
         pk = self.kwargs.get(self.pk_url_kwarg, None)
         detail = asset.objects.get(id=pk)
+        assets_change_record_form = assets_change_record_Form()
+        comments = self.object.asset_change_record.all()
 
         context = {
             "asset_active": "active",
             "asset_list_active": "active",
             "assets": detail,
             "nid": pk,
+            "comment_form": assets_change_record_form,
+            "comments": comments,
         }
         kwargs.update(context)
         return super(AssetDetail, self).get_context_data(**kwargs)
@@ -621,6 +636,8 @@ class AssetUpload(View):
             return response
 
 
+
+#导出资产列表功能
 @login_required(login_url="/login.html")
 @permission_required_or_403('asset.read_asset')
 def export(request):

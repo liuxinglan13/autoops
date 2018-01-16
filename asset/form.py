@@ -1,5 +1,5 @@
 from    django import forms
-from .models import asset,system_users
+from .models import asset,system_users, assets_change_record
 from	django.forms	import		ValidationError
 
 # from django.utils.translation import gettext_lazy as _
@@ -80,4 +80,11 @@ class SystemUserForm(forms.ModelForm):
 
 
 
-
+class assets_change_record_Form(forms.ModelForm):
+    class Meta:
+        model = assets_change_record
+        fields = ('body',)
+        # #
+        # # widgets = {
+        # #     'body': TextInput(attrs={'class': 'form-test'}),
+        # }
